@@ -1,0 +1,96 @@
+swagger: '2.0'
+#必要字段！描述API接口信息的元数据
+info:
+  #接口标题
+  title: weather接口
+  #接口文档的描述
+  description: 学习Swagger
+  #版本号
+  version: 1.0.0
+#Swagger会提供测试用例，host指定测试时的主机名，如果没有指定就是当前主机,可以指定端口．
+host: localhost:8555
+#定义的api的前缀，必须已/开头,测试用例的主机则为:host＋bashPath
+basePath: /weather/v1
+#指定调用接口的协议，必须是:"http", "https", "ws", "wss"．默认是http.-表示是个数组元素，即schemes接受一个数组参数
+schemes:
+- http
+- https
+#对应与http协议头request的Accept，调用者可接受类型,默认是*/*,定义的类型必须是http协议定义的 Mime Types,RestfulAPI一般定义成application/json
+#这两个是对所有接口的全局设置，在细化的接口中是还可以对应这两个属性来覆盖全局属性
+produces:
+- application/json
+consumes:
+- application/json
+securityDefinitions:
+  APIToken:
+    type: apiKey
+    in: header
+    name: X-API-TOKEN
+security:
+- APIToken: []
+
+paths:
+  /now:
+    get:
+      tags:
+      - 天气
+      description: 实况天气
+      #请求参数
+      parameters:
+      #参数key
+      - name: location
+        #传递方法，formData表示表单传输，还有query表示url拼接传输，path表示作为url的一部分
+        #body表示http头承载参数(body只能有一个,有body不能在有其他的)
+        in: path
+        #参数描述
+        description: 城市或地区
+#        1. 城市ID：城市列表
+#        2. 经纬度格式：经度,纬度（经度在前纬度在后，英文,分隔，十进制格式，北纬东经为正，南纬西经为负
+#        3. 城市名称，支持中英文和汉语拼音
+#        4. 城市名称，上级城市 或 省 或 国家，英文,分隔，此方式可以在重名的情况下只获取想要的地区的天气数据，例如 西安,陕西
+#        5. IP
+#        6. 根据请求自动判断，根据用户的请求获取IP，通过 IP 定位并获取城市数据
+        #参数是否必要，默认false
+        required: true
+        #参数类型，可选的包括array,integer,boolean,string.使用array必须使用items
+        type: string
+      responses:
+        #返回的http状态码
+        200:
+          description: 操作成功
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        400:
+          description: 请求成功，但是业务失败
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: 权限验证失败
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        429:
+          description: 请求次数过多
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+definitions:
+  # General Response
+  ApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      data:
+        type: string
+      message:
+        type: string
+
+  ErrorResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+      message:
+        type: string
