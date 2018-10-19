@@ -16,10 +16,13 @@ DefinitionsApiresponse = {'type': 'object', 'properties': {'status': {'type': 'i
 DefinitionsErrorresponse = {'type': 'object', 'properties': {'status': {'type': 'integer', 'format': 'int32'}, 'message': {'type': 'string'}}}
 
 validators = {
+    ('now', 'GET'): {'args': {'required': ['location'], 'properties': {'location': {'description': u'\u57ce\u5e02\u6216\u5730\u533a', 'type': 'string', 'example': u'\u6b66\u6c49'}}}},
+    ('lifestyle', 'GET'): {'args': {'required': ['location'], 'properties': {'location': {'description': u'\u57ce\u5e02\u6216\u5730\u533a', 'type': 'string', 'example': u'\u6b66\u6c49'}}}},
 }
 
 filters = {
     ('now', 'GET'): {200: {'headers': None, 'schema': DefinitionsApiresponse}, 400: {'headers': None, 'schema': DefinitionsErrorresponse}, 429: {'headers': None, 'schema': DefinitionsErrorresponse}, 401: {'headers': None, 'schema': DefinitionsErrorresponse}},
+    ('lifestyle', 'GET'): {200: {'headers': None, 'schema': DefinitionsApiresponse}, 400: {'headers': None, 'schema': DefinitionsErrorresponse}, 429: {'headers': None, 'schema': DefinitionsErrorresponse}, 401: {'headers': None, 'schema': DefinitionsErrorresponse}},
 }
 
 scopes = {

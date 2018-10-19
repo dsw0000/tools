@@ -4,7 +4,9 @@ info:
   #接口标题
   title: weather接口
   #接口文档的描述
-  description: 学习Swagger
+  description: 个人网站接口
+  contact:
+    email: "ivo_d@icloud.com"
   #版本号
   version: 1.0.0
 #Swagger会提供测试用例，host指定测试时的主机名，如果没有指定就是当前主机,可以指定端口．
@@ -21,19 +23,39 @@ produces:
 - application/json
 consumes:
 - application/json
+
+#securityDefinitions:
+#  APIToken:
+#    type: apiKey
+#    in: header
+#    name: X-API-TOKEN
+#security:
+#- APIToken: []
 securityDefinitions:
-  APIToken:
-    type: apiKey
-    in: header
-    name: X-API-TOKEN
-security:
-- APIToken: []
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+
+tags:
+- name: "weather"
+  description: "天气接口"
+  externalDocs:
+    description: "数据来源于和风天气，每天有访问量限制"
+    url: "https://www.heweather.com/documents"
 
 paths:
   /now:
     get:
       tags:
-      - 天气
+      - weather
       description: 实况天气
       #请求参数
       parameters:
@@ -41,7 +63,7 @@ paths:
       - name: location
         #传递方法，formData表示表单传输，还有query表示url拼接传输，path表示作为url的一部分
         #body表示http头承载参数(body只能有一个,有body不能在有其他的)
-        in: path
+        in: query
         #参数描述
         description: 城市或地区
 #        1. 城市ID：城市列表
@@ -54,6 +76,51 @@ paths:
         required: true
         #参数类型，可选的包括array,integer,boolean,string.使用array必须使用items
         type: string
+        example: 武汉
+      responses:
+        #返回的http状态码
+        200:
+          description: 操作成功
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        400:
+          description: 请求成功，但是业务失败
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: 权限验证失败
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        429:
+          description: 请求次数过多
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /lifestyle:
+    get:
+      tags:
+      - weather
+      description: 生活指数和生活指数预报包括：穿衣、洗车、感冒、紫外线、运动、舒适度、旅游、空气污染扩散条件
+      #请求参数
+      parameters:
+      #参数key
+      - name: location
+        #传递方法，formData表示表单传输，还有query表示url拼接传输，path表示作为url的一部分
+        #body表示http头承载参数(body只能有一个,有body不能在有其他的)
+        in: query
+        #参数描述
+        description: 城市或地区
+#                1. 城市ID：城市列表
+#                2. 经纬度格式：经度,纬度（经度在前纬度在后，英文,分隔，十进制格式，北纬东经为正，南纬西经为负
+#                3. 城市名称，支持中英文和汉语拼音
+#                4. 城市名称，上级城市 或 省 或 国家，英文,分隔，此方式可以在重名的情况下只获取想要的地区的天气数据，例如 西安,陕西
+#                5. IP
+#                6. 根据请求自动判断，根据用户的请求获取IP，通过 IP 定位并获取城市数据
+        #参数是否必要，默认false
+        required: true
+        #参数类型，可选的包括array,integer,boolean,string.使用array必须使用items
+        type: string
+        example: 武汉
       responses:
         #返回的http状态码
         200:

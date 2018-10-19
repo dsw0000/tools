@@ -12,7 +12,7 @@ from requests import get
 from json import loads
 
 
-class Now(Resource):
+class Lifestyle(Resource):
 
     def get(self):
         try:
@@ -20,7 +20,7 @@ class Now(Resource):
         except KeyError:
             return {"status": -1, "message": "params error: %s" % (g.args.__str__)}, 400, None
 
-        heweather_runtime_url = "https://api.heweather.com/s6/weather/now?"
+        heweather_runtime_url = "https://api.heweather.com/s6/weather/lifestyle?"
 
         res = get(
             url=heweather_runtime_url,

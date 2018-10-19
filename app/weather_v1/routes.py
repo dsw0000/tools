@@ -9,8 +9,10 @@
 from __future__ import absolute_import
 
 from .api.now import Now
+from .api.lifestyle import Lifestyle
 
 
 routes = [
     dict(resource=Now, urls=['/now'], endpoint='now'),
+    dict(resource=Lifestyle, urls=['/lifestyle'], endpoint='lifestyle'),
 ]
